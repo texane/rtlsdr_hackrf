@@ -75,7 +75,7 @@ int rtlsdr_get_device_usb_strings
  char *serial
 )
 {
-  if (manufact != NULL) strcpy(manufact, "scott gadgets");
+  if (manufact != NULL) strcpy(manufact, "great scott gadgets");
   if (product != NULL) strcpy(product, "hackrf one");
   if (serial != NULL) strcpy(serial, "none");
   return 0;
@@ -433,7 +433,7 @@ static int hackrf_rx_sync_cb(hackrf_transfer* trans)
 {
   struct hackrf_rx_ctx* const rx_ctx = trans->rx_ctx;
   int len;
-  if (rx_ctx->count) return -1;
+  if (rx_ctx->count) return 0;
   len = trans->valid_length;
   if (len > rx_ctx->len) len = rx_ctx->len;
   memcpy(rx_ctx->buf, trans->buffer, len);
