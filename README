@@ -1,0 +1,2 @@
+implements librtlsdr on top of libhackrf, so that existing
+rtlsdr code base can be used on top of HackRF one.
