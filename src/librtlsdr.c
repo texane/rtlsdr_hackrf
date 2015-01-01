@@ -125,10 +125,21 @@ int rtlsdr_open
     goto on_error_1;
   }
 
+  dev->freq = 0;
+  dev->sampl_rate = 0;
+  dev->gain = 0;
+  dev->async_status = 0;
+
   if (hackrf_open(&dev->devh))
   {
     err = -1;
     goto on_error_2;
+  }
+
+  if (hackrf_set_vga_gain(dev->devh, 20))
+  {
+    err = -1;
+    goto on_error_3;
   }
 
   if (hackrf_set_lna_gain(dev->devh, 32))
@@ -137,8 +148,6 @@ int rtlsdr_open
     goto on_error_3;
   }
   dev->gain = 32;
-
-  dev->async_status = 0;
 
   *devp = dev;
   return 0;
@@ -178,7 +187,7 @@ int rtlsdr_set_xtal_freq
     return -1;
   }
 
-  if (hackrf_set_freq(dev->devh, (double)rtl_freq))
+  if (hackrf_set_freq(dev->devh, (uint64_t)rtl_freq))
   {
     ERROR();
     return -1;
@@ -340,13 +349,22 @@ int rtlsdr_set_sample_rate
  uint32_t rate
 )
 {
-  if (hackrf_set_sample_rate(dev->devh, (double)rate))
+  uint32_t x;
+
+  if (hackrf_set_sample_rate_manual(dev->devh, rate, 1))
   {
     ERROR();
     return -1;
   }
 
   dev->sampl_rate = rate;
+
+  x = hackrf_compute_baseband_filter_bw(rate);
+  if (hackrf_set_baseband_filter_bandwidth(dev->devh, x))
+  {
+    ERROR();
+    return -1;
+  }
 
   return 0;
 }
