@@ -1,2 +1,13 @@
-implements librtlsdr on top of libhackrf, so that existing
-rtlsdr code base can be used on top of HackRF one.
+implements librtlsdr on top of libhackrf, so that existing rtlsdr
+code base can be used on top of HackRF one.
+
+First, install the following libraries:
+. libusb
+. librtlsdr
+. libhackrt
+
+Then, compile using ./build.sh. It will produce librtlsdr.so.0.
+Then, use LD_LIBRARY_PATH so the (not statically compiled) binary
+will use this new librtlsdr.so.0 instead of the default one. This
+makes your hackrf device seen as an rtlsdr dongle from the software
+point of view. An example is available in run.sh, which runs rtl_fm.
